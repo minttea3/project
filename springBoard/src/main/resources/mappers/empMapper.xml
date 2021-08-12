@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.board">
+<!-- 사원 전체 목록 -->
+	<select id="list" resultType="com.board.domain.empVO">
+		select
+	 		*
+	 	from emp
+	 	where 1=1
+	</select>
+<!-- 사원 등록 -->
+	<insert id="create">
+		insert into emp(empno,ename,job,mgr,sal,comm)
+		values(employee_idx.nextval,#{ename},#{job},#{mgr},#{sal},#{comm})
+	</insert>
+	
+<!--  게시글 상세정보  -->
+    <select id="detail" resultType="com.board.domain.empVO">
+        select empno,ename,job,mgr,sal,comm
+        from emp where empno = #{empno}
+    </select>	
+<!-- 사원 정보 수정 -->
+   <update id="update">
+  		update emp 
+            set ename=#{ename},job=#{job},mgr=#{mgr},sal=#{sal},comm=#{comm}
+        where empno=#{empno}
+   </update>
+<!-- 사원 정보 삭제 -->
+    <delete id="delete">
+        delete from emp
+        where empno=#{empno}
+    </delete>
+<!-- 사원 번호 검색 -->
+  	<select id="empIdxSearch" parameterType="int" resultType="com.board.domain.empVO">
+  		select * from emp where empno LIKE '%' ||  #{empno} || '%'
+  	</select>
+<!-- 사원번호, 사원이름, 입사일자로 검색  -->
+	<select id="empSearch" resultType="com.board.domain.empVO">
+		select * 
+		from emp 
+		
+		<choose>
+			<when test="ename != null and ename != '' and empno==null">
+			where ename= #{ename}
+			</when>
+			<when test="empno != '' and empno!=null and ename== ''">
+			where empno=#{empno} 
+			</when>
+			<when test="ename == '' and empno == null">
+			where ename = ''
+			and empno = null
+			</when>
+			<otherwise>
+			where ename= #{ename}
+			and empno= #{empno} 
+			</otherwise>
+		</choose>
+		
+  	</select>
+</mapper>
